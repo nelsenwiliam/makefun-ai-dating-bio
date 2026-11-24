@@ -14,9 +14,14 @@ def main() -> None:
     assert "\n" not in BIO, "bio must be a single line"
     text = BIO + "\n"
     out_dir = "/output"
-    if os.path.isdir(out_dir):
+    try:
+        os.makedirs(out_dir, exist_ok=True)
         with open(os.path.join(out_dir, "entry.txt"), "w", encoding="utf-8") as f:
             f.write(text)
+    except OSError:
+        # No harness output directory available (e.g. read-only root):
+        # the local entry.txt below is still written.
+        pass
     here = os.path.dirname(os.path.abspath(__file__))
     with open(os.path.join(here, "entry.txt"), "w", encoding="utf-8") as f:
         f.write(text)
